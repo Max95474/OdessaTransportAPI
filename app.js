@@ -1,12 +1,15 @@
 'use strict';
 
-var SwaggerExpress = require('swagger-express-mw');
-var app = require('express')();
+const SwaggerExpress = require('swagger-express-mw');
+const app = require('express')();
+const morgan = require('morgan');
 module.exports = app; // for testing
 
-var config = {
+const config = {
   appRoot: __dirname // required config
 };
+
+app.use(morgan('dev'));
 
 SwaggerExpress.create(config, function(err, swaggerExpress) {
   if (err) { throw err; }
@@ -16,10 +19,13 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
 
   app.use(swaggerExpress.runner.swaggerTools.swaggerUi());
 
-  var port = process.env.PORT || 10010;
-  app.listen(port);
-
-  if (swaggerExpress.runner.swagger.paths['/hello']) {
-    console.log('try this:\ncurl http://127.0.0.1:' + port + '/hello?name=Scott');
-  }
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => console.log(`Server is listening on port ${port}...`));
 });
+
+const api = require('./modules/transportapi');
+// api.getRoute('tram', '10')
+//   .then(response => response.data.segments.map(segment => parseInt(segment.stoppingId)))
+//   .then(stoppingIds => api.getStoppings(stoppingIds))
+//   .then(stoppings => console.log("Stoppings: ", stoppings))
+//   .catch(err => console.log("Error: ", err));

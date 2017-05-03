@@ -18,43 +18,106 @@ consumes:
 produces:
   - application/json
 paths:
-  /hello:
-    # binds a127 app logic to a route
-    x-swagger-router-controller: hello_world
+  /swagger:
+    x-swagger-pipe: swagger_raw
+  /route/list:
+    x-swagger-router-controller: routes
     get:
-      description: Returns 'Hello' to the caller
-      # used as the method name of the controller
-      operationId: hello
-      parameters:
-        - name: name
-          in: query
-          description: The name of the person to whom to say hello
-          required: false
-          type: string
+      description: Returns routes list
+      operationId: getRouteList
       responses:
         "200":
           description: Success
           schema:
-            # a pointer to a definition
-            $ref: "#/definitions/HelloWorldResponse"
-        # responses may fall through to errors
-        default:
-          description: Error
+            type: array
+            items:
+              $ref: "#/definitions/Route"
+  /route/{id}:
+    x-swagger-router-controller: routes
+    get:
+      description: Returns a Route by id
+      operationId: getRoute
+      parameters:
+        - name: id
+          in: path
+          description: ID of the route
+          required: true
+          type: integer
+#          format: int64
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Route"
+        "404":
+          description: Route not found
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /swagger:
-    x-swagger-pipe: swagger_raw
+  /state:
+    x-swagger-router-controller: routes
+    get:
+      description: Returns list of states for specified transport IMEI numbers
+      operationId: getState
+      parameters:
+        - name: imei
+          in: query
+          description: Transport keys
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/State"
+        "500":
+          description: Server error
+
 # complex objects have schema definitions
 definitions:
-  HelloWorldResponse:
-    required:
-      - message
-    properties:
-      message:
-        type: string
   ErrorResponse:
     required:
       - message
     properties:
       message:
+        type: string
+  Route:
+    properties:
+      id:
+        type: string
+      Number:
+        type: string
+      Type:
+        type: string
+      title:
+        type: string
+      color:
+        type: string
+      distance:
+        type: string
+      cost:
+        type: string
+      last_update:
+        type: string
+  State:
+    properties:
+      lat:
+        type: string
+      lng:
+        type: string
+      ts:
+        type: string
+      speed:
+        type: string
+      azimut:
+        type: string
+      ignit:
+        type: string
+      activesim:
+        type: string
+      sats:
+        type: string
+      gsmpower:
+        type: string
+      imei:
         type: string
