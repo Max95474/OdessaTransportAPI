@@ -3,46 +3,34 @@ const request = require('supertest');
 const server = require('../../../app');
 
 describe('controllers', function() {
-
-  describe('hello_world', function() {
-
-    describe('GET /hello', function() {
-
-      it('should return a default string', function(done) {
-
+  describe('routes', function() {
+    describe('GET /route/list', function() {
+      it('should return a list of routes', function(done) {
         request(server)
-          .get('/hello')
+          .get('/route/list')
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(200)
           .end(function(err, res) {
             should.not.exist(err);
-
-            res.body.should.eql('Hello, stranger!');
-
+            should.equal(Object.keys(res.body[0]).length, 9);
             done();
           });
-      });
-
-      it('should accept a name parameter', function(done) {
-
-        request(server)
-          .get('/hello')
-          .query({ name: 'Scott'})
-          .set('Accept', 'application/json')
-          .expect('Content-Type', /json/)
-          .expect(200)
-          .end(function(err, res) {
-            should.not.exist(err);
-
-            res.body.should.eql('Hello, Scott!');
-
-            done();
-          });
-      });
-
+      })
     });
-
-  });
-
+    describe('GET /route/{id}', function() {
+      it('should return a route by id', function(done) {
+        request(server)
+          .get('/route/99')
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function(err, res) {
+            should.not.exist(err);
+            should.equal(Object.keys(res.body).length, 11);
+            done();
+          })
+      })
+    })
+  })
 });

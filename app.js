@@ -22,10 +22,3 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   const port = process.env.PORT || 3000;
   app.listen(port, () => console.log(`Server is listening on port ${port}...`));
 });
-
-const api = require('./modules/transportapi');
-// api.getRoute('tram', '10')
-//   .then(response => response.data.segments.map(segment => parseInt(segment.stoppingId)))
-//   .then(stoppingIds => api.getStoppings(stoppingIds))
-//   .then(stoppings => console.log("Stoppings: ", stoppings))
-//   .catch(err => console.log("Error: ", err));
